@@ -115,7 +115,7 @@ namespace EventStore.Projections.Core.Services.Processing
             var eventReader = projectionSubscription.CreatePausedEventReader(
                 _publisher, _ioDispatcher, distibutionPointCorrelationId);
 //            _logger.Trace(
-//                "The '{0}' projection subscribed to the '{1}' distribution point", subscriptionId,
+//                "The '{subscriptionId}' projection subscribed to the '{distibutionPointCorrelationId}' distribution point", subscriptionId,
 //                distibutionPointCorrelationId);
             _eventReaders.Add(distibutionPointCorrelationId, eventReader);
             _subscriptionEventReaders.Add(subscriptionId, distibutionPointCorrelationId);
@@ -297,7 +297,7 @@ namespace EventStore.Projections.Core.Services.Processing
 
             if (_eventReaders.Count > 0)
             {
-                _logger.Info("_eventReaders is not empty after all the projections have been killed");
+                _logger.Info("_eventReaders is not empty after all the projections have been killed"); 
                 _eventReaders.Clear();
             }
 

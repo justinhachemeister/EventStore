@@ -287,20 +287,20 @@ namespace EventStore.Core.Services.VNode
 
         private void Handle(SystemMessage.SystemInit message)
         {
-            Log.Info("========== [{0}] SYSTEM INIT...", _nodeInfo.InternalHttp);
+            Log.Info("========== [{internalHttp}] SYSTEM INIT...", _nodeInfo.InternalHttp);
             _outputBus.Publish(message);
         }
 
         private void Handle(SystemMessage.SystemStart message)
         {
-            Log.Info("========== [{0}] SYSTEM START...", _nodeInfo.InternalHttp);
+            Log.Info("========== [{internalHttp}] SYSTEM START...", _nodeInfo.InternalHttp);
             _outputBus.Publish(message);
             _fsm.Handle(new SystemMessage.BecomeUnknown(Guid.NewGuid()));
         }
 
         private void Handle(SystemMessage.BecomeUnknown message)
         {
-            Log.Info("========== [{0}] IS UNKNOWN...", _nodeInfo.InternalHttp);
+            Log.Info("========== [{internalHttp}] IS UNKNOWN...", _nodeInfo.InternalHttp);
 
             _state = VNodeState.Unknown;
             _master = null;
@@ -314,7 +314,7 @@ namespace EventStore.Core.Services.VNode
             if (_stateCorrelationId != message.CorrelationId)
                 return;
 
-            Log.Info("========== [{0}] PRE-REPLICA STATE, WAITING FOR CHASER TO CATCH UP... MASTER IS [{1},{2:B}]",
+            Log.Info("========== [{internalHttp}] PRE-REPLICA STATE, WAITING FOR CHASER TO CATCH UP... MASTER IS [{masterInternalHttp},{masterId:B}]",
                      _nodeInfo.InternalHttp, _master.InternalHttp, _master.InstanceId);
             _state = VNodeState.PreReplica;
             _outputBus.Publish(message);
@@ -327,7 +327,7 @@ namespace EventStore.Core.Services.VNode
             if (_stateCorrelationId != message.CorrelationId)
                 return;
 
-            Log.Info("========== [{0}] IS CATCHING UP... MASTER IS [{1},{2:B}]",
+            Log.Info("========== [{internalHttp}] IS CATCHING UP... MASTER IS [{masterInternalHttp},{masterId:B}]",
                      _nodeInfo.InternalHttp, _master.InternalHttp, _master.InstanceId);
             _state = VNodeState.CatchingUp;
             _outputBus.Publish(message);
@@ -339,7 +339,7 @@ namespace EventStore.Core.Services.VNode
             if (_stateCorrelationId != message.CorrelationId)
                 return;
 
-            Log.Info("========== [{0}] IS CLONE... MASTER IS [{1},{2:B}]",
+            Log.Info("========== [{internalHttp}] IS CLONE... MASTER IS [{masterInternalHttp},{masterId:B}]",
                      _nodeInfo.InternalHttp, _master.InternalHttp, _master.InstanceId);
             _state = VNodeState.Clone;
             _outputBus.Publish(message);
@@ -351,7 +351,7 @@ namespace EventStore.Core.Services.VNode
             if (_stateCorrelationId != message.CorrelationId)
                 return;
 
-            Log.Info("========== [{0}] IS SLAVE... MASTER IS [{1},{2:B}]",
+            Log.Info("========== [{internalHttp}] IS SLAVE... MASTER IS [{masterInternalHttp},{masterId:B}]",
                      _nodeInfo.InternalHttp, _master.InternalHttp, _master.InstanceId);
             _state = VNodeState.Slave;
             _outputBus.Publish(message);
@@ -363,7 +363,7 @@ namespace EventStore.Core.Services.VNode
             if (_stateCorrelationId != message.CorrelationId)
                 return;
 
-            Log.Info("========== [{0}] PRE-MASTER STATE, WAITING FOR CHASER TO CATCH UP...", _nodeInfo.InternalHttp);
+            Log.Info("========== [{internalHttp}] PRE-MASTER STATE, WAITING FOR CHASER TO CATCH UP...", _nodeInfo.InternalHttp);
             _state = VNodeState.PreMaster;
             _outputBus.Publish(message);
             _mainQueue.Publish(new SystemMessage.WaitForChaserToCatchUp(_stateCorrelationId, TimeSpan.Zero));
@@ -376,7 +376,7 @@ namespace EventStore.Core.Services.VNode
             if (_stateCorrelationId != message.CorrelationId)
                 return;
 
-            Log.Info("========== [{0}] IS MASTER... SPARTA!", _nodeInfo.InternalHttp);
+            Log.Info("========== [{internalHttp}] IS MASTER... SPARTA!", _nodeInfo.InternalHttp);
             _state = VNodeState.Master;
             _outputBus.Publish(message);
         }
@@ -386,7 +386,7 @@ namespace EventStore.Core.Services.VNode
             if (_state == VNodeState.ShuttingDown || _state == VNodeState.Shutdown)
                 return;
 
-            Log.Info("========== [{0}] IS SHUTTING DOWN...", _nodeInfo.InternalHttp);
+            Log.Info("========== [{internalHttp}] IS SHUTTING DOWN...", _nodeInfo.InternalHttp);
             _master = null;
             _stateCorrelationId = message.CorrelationId;
             _exitProcessOnShutdown = message.ExitProcess;
@@ -397,7 +397,7 @@ namespace EventStore.Core.Services.VNode
 
         private void Handle(SystemMessage.BecomeShutdown message)
         {
-            Log.Info("========== [{0}] IS SHUT DOWN.", _nodeInfo.InternalHttp);
+            Log.Info("========== [{internalHttp}] IS SHUT DOWN.", _nodeInfo.InternalHttp);
             _state = VNodeState.Shutdown;
             try
             {
@@ -405,7 +405,7 @@ namespace EventStore.Core.Services.VNode
             }
             catch (Exception exc)
             {
-                Log.ErrorException(exc, "Error when publishing {0}.", message);
+                Log.ErrorException(exc, "Error when publishing {message}.", message);
             }
             try
             {
@@ -446,7 +446,7 @@ namespace EventStore.Core.Services.VNode
 
         private void Handle(SystemMessage.ServiceInitialized message)
         {
-            Log.Info("========== [{0}] Service '{1}' initialized.", _nodeInfo.InternalHttp, message.ServiceName);
+            Log.Info("========== [{internalHttp}] Service '{serviceName}' initialized.", _nodeInfo.InternalHttp, message.ServiceName);
             _serviceInitsToExpect -= 1;
             _outputBus.Publish(message);
             if (_serviceInitsToExpect == 0)
@@ -475,7 +475,7 @@ namespace EventStore.Core.Services.VNode
 
         private void Handle(SystemMessage.SubSystemInitialized message)
         {
-            Log.Info("========== [{0}] Sub System '{1}' initialized.", _nodeInfo.InternalHttp, message.SubSystemName);
+            Log.Info("========== [{internalHttp}] Sub System '{subSystemName}' initialized.", _nodeInfo.InternalHttp, message.SubSystemName);
             _subSystemInitsToExpect -= 1;
             if (_subSystemInitsToExpect == 0){
                 _outputBus.Publish(new SystemMessage.SystemReady());
@@ -688,9 +688,9 @@ namespace EventStore.Core.Services.VNode
             if (_master == null) throw new Exception("_master == null");
             if (message.ClusterInfo.Members.Count(x => x.IsAlive && x.State == VNodeState.Master) > 1)
             {
-                Log.Debug("There are FEW MASTERS according to gossip, need to start elections. MASTER: [{0}]", _master);
+                Log.Debug("There are FEW MASTERS according to gossip, need to start elections. MASTER: [{master}]", _master);
                 Log.Debug("GOSSIP:");
-                Log.Debug("{0}", message.ClusterInfo);
+                Log.Debug("{clusterInfo}", message.ClusterInfo);
                 _mainQueue.Publish(new ElectionMessage.StartElections());
             }
 
@@ -703,7 +703,7 @@ namespace EventStore.Core.Services.VNode
             var master = message.ClusterInfo.Members.FirstOrDefault(x => x.InstanceId == _master.InstanceId);
             if (master == null || !master.IsAlive)
             {
-                Log.Debug("There is NO MASTER or MASTER is DEAD according to GOSSIP. Starting new elections. MASTER: [{0}].", _master);
+                Log.Debug("There is NO MASTER or MASTER is DEAD according to GOSSIP. Starting new elections. MASTER: [{master}].", _master);
                 _mainQueue.Publish(new ElectionMessage.StartElections());
             }
 
@@ -790,7 +790,7 @@ namespace EventStore.Core.Services.VNode
         {
             if (IsLegitimateReplicationMessage(message))
             {
-                Log.Info("========== [{0}] SLAVE ASSIGNMENT RECEIVED FROM [{1},{2},{3:B}].",
+                Log.Info("========== [{internalHttp}] SLAVE ASSIGNMENT RECEIVED FROM [{internalTcp},{internalSecureTcp},{masterId:B}].",
                          _nodeInfo.InternalHttp,
                          _master.InternalTcp, _master.InternalSecureTcp == null ? "n/a" : _master.InternalSecureTcp.ToString(),
                          message.MasterId);
@@ -803,9 +803,10 @@ namespace EventStore.Core.Services.VNode
         {
             if (IsLegitimateReplicationMessage(message))
             {
-                Log.Info("========== [{0}] CLONE ASSIGNMENT RECEIVED FROM [{1},{2},{3:B}].",
+                Log.Info("========== [{internalHttp}] CLONE ASSIGNMENT RECEIVED FROM [{internalTcp},{internalSecureTcp},{masterId:B}].",
                          _nodeInfo.InternalHttp,
-                         _master.InternalTcp, _master.InternalSecureTcp == null ? "n/a" : _master.InternalSecureTcp.ToString(),
+                         _master.InternalTcp,
+                         _master.InternalSecureTcp == null ? "n/a" : _master.InternalSecureTcp.ToString(),
                          message.MasterId);
                 _outputBus.Publish(message);
                 _fsm.Handle(new SystemMessage.BecomeClone(_stateCorrelationId, _master));
@@ -817,7 +818,7 @@ namespace EventStore.Core.Services.VNode
             if (message.SubscriptionId == Guid.Empty) throw new Exception("IReplicationMessage with empty SubscriptionId provided.");
             if (message.SubscriptionId != _subscriptionId)
             {
-                Log.Trace("Ignoring {0} because SubscriptionId {1:B} is wrong. Current SubscriptionId is {2:B}.",
+                Log.Trace("Ignoring {message} because SubscriptionId {receivedSubscriptionId:B} is wrong. Current SubscriptionId is {subscriptionId:B}.",
                           message.GetType().Name, message.SubscriptionId, _subscriptionId);
                 return false;
             }
@@ -826,7 +827,9 @@ namespace EventStore.Core.Services.VNode
                 var msg = string.Format("{0} message passed SubscriptionId check, but master is either null or wrong. "
                                         + "Message.Master: [{1:B}], VNode Master: {2}.",
                                         message.GetType().Name, message.MasterId, _master);
-                Log.Fatal(msg);
+                Log.Fatal("{messageType} message passed SubscriptionId check, but master is either null or wrong. "
+                        + "Message.Master: [{masterId:B}], VNode Master: {masterInfo}.",
+                        message.GetType().Name, message.MasterId, _master);
                 Application.Exit(ExitCode.Error, msg);
                 return false;
             }
@@ -841,11 +844,11 @@ namespace EventStore.Core.Services.VNode
 
         private void Handle(SystemMessage.ServiceShutdown message)
         {
-            Log.Info("========== [{0}] Service '{1}' has shut down.", _nodeInfo.InternalHttp, message.ServiceName);
+            Log.Info("========== [{internalHttp}] Service '{serviceName}' has shut down.", _nodeInfo.InternalHttp, message.ServiceName);
             _serviceShutdownsToExpect -= 1;
             if (_serviceShutdownsToExpect == 0)
             {
-                Log.Info("========== [{0}] All Services Shutdown.", _nodeInfo.InternalHttp);
+                Log.Info("========== [{internalHttp}] All Services Shutdown.", _nodeInfo.InternalHttp);
                 Shutdown();
             }
             _outputBus.Publish(message);
@@ -855,7 +858,7 @@ namespace EventStore.Core.Services.VNode
         {
             Debug.Assert(_state == VNodeState.ShuttingDown);
 
-            Log.Error("========== [{0}] Shutdown Timeout.", _nodeInfo.InternalHttp);
+            Log.Error("========== [{internalHttp}] Shutdown Timeout.", _nodeInfo.InternalHttp);
             Shutdown();
             _outputBus.Publish(message);
         }

@@ -235,6 +235,9 @@ namespace EventStore.ClusterNode
         [ArgDescription(Opts.ReduceFileCachePressureDescr, Opts.DbGroup)]
         public bool ReduceFileCachePressure { get; set; }
 
+        [ArgDescription(Opts.StructuredLogDescr, Opts.DbGroup)]
+        public bool StructuredLog { get; set; }
+
         public ClusterNodeOptions()
         {
             Config = "";

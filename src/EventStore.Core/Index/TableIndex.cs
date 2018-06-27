@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -159,15 +159,11 @@ namespace EventStore.Core.Index
         {
             try
             {
-                var sb = new StringBuilder();
-                sb.AppendFormat("IndexMap '{0}' content:\n", indexmapFile);
-                sb.AppendLine(Helper.FormatBinaryDump(File.ReadAllBytes(indexmapFile)));
-
-                Log.Error(sb.ToString());
+                Log.Error("IndexMap '{indexMap}' content:\n {content}", indexmapFile, Helper.FormatBinaryDump(File.ReadAllBytes(indexmapFile)));
             }
             catch (Exception exc)
             {
-                Log.ErrorException(exc, "Unexpected error while dumping IndexMap '{0}'.", indexmapFile);
+                Log.ErrorException(exc, "Unexpected error while dumping IndexMap '{indexMap}'.", indexmapFile);
             }
         }
 
@@ -178,12 +174,12 @@ namespace EventStore.Core.Index
             {
                 dumpPath = Path.Combine(Path.GetDirectoryName(_directory),
                                         string.Format("index-backup-{0:yyyy-MM-dd_HH-mm-ss.fff}", DateTime.UtcNow));
-                Log.Error("Making backup of index folder for inspection to {0}...", dumpPath);
+                Log.Error("Making backup of index folder for inspection to {dumpPath}...", dumpPath);
                 FileUtils.DirectoryCopy(_directory, dumpPath, copySubDirs: true);
             }
             catch (Exception exc)
             {
-                Log.ErrorException(exc, "Unexpected error while copying index to backup dir '{0}'", dumpPath);
+                Log.ErrorException(exc, "Unexpected error while copying index to backup dir '{dumpPath}'", dumpPath);
             }
         }
 
@@ -224,7 +220,7 @@ namespace EventStore.Core.Index
                     newTables.AddRange(_awaitingMemTables.Select(
                         (x, i) => i == 0 ? new TableItem(x.Table, prepareCheckpoint, commitPos) : x));
 
-                    Log.Trace("Switching MemTable, currently: {0} awaiting tables.", newTables.Count);
+                    Log.Trace("Switching MemTable, currently: {awaitingMemTables} awaiting tables.", newTables.Count);
 
                     _awaitingMemTables = newTables;
                     if (_inMem) return;
@@ -251,7 +247,7 @@ namespace EventStore.Core.Index
                     //ISearchTable table;
                     lock (_awaitingTablesLock)
                     {
-                        Log.Trace("Awaiting tables queue size is: {0}.", _awaitingMemTables.Count);
+                        Log.Trace("Awaiting tables queue size is: {awaitingMemTables}.", _awaitingMemTables.Count);
                         if (_awaitingMemTables.Count == 1)
                         {
                             _backgroundRunning = false;
@@ -297,7 +293,7 @@ namespace EventStore.Core.Index
                         if (!ReferenceEquals(corrTable.Table, ptable) && corrTable.Table is PTable)
                             ((PTable)corrTable.Table).MarkForDestruction();
 
-                        Log.Trace("There are now {0} awaiting tables.", memTables.Count);
+                        Log.Trace("There are now {memTables} awaiting tables.", memTables.Count);
                         _awaitingMemTables = memTables;
                     }
                     mergeResult.ToDelete.ForEach(x => x.MarkForDestruction());
@@ -334,7 +330,7 @@ namespace EventStore.Core.Index
                 if (memtable == null || !memtable.MarkForConversion())
                     continue;
 
-                Log.Trace("Putting awaiting file as PTable instead of MemTable [{0}].", memtable.Id);
+                Log.Trace("Putting awaiting file as PTable instead of MemTable [{id}].", memtable.Id);
 
                 var ptable = PTable.FromMemtable(memtable, _fileNameProvider.GetFilenameNewTable(), _indexCacheDepth, _skipIndexVerify);
                 var swapped = false;
@@ -502,7 +498,7 @@ namespace EventStore.Core.Index
                 }
                 catch (FileBeingDeletedException)
                 {
-                    Log.Trace("File being deleted.");
+                    Log.Trace("File being deleted."); 
                 }
                 catch (MaybeCorruptIndexException e){
                     ForceIndexVerifyOnNextStartup();
@@ -639,7 +635,7 @@ namespace EventStore.Core.Index
                 };
             }
             catch{
-                Log.Error("Could not create force index verification file at: "+path);
+                Log.Error("Could not create force index verification file at: {path}", path);
             }
 
             return;
@@ -657,7 +653,7 @@ namespace EventStore.Core.Index
                     File.Delete(path);
             }
             catch{
-                Log.Error("Could not delete force index verification file at: "+path);
+                Log.Error("Could not delete force index verification file at: {path}", path);
             }
         }
     }

@@ -175,7 +175,7 @@ namespace EventStore.Core.Services.Monitoring
             }
             catch (Exception ex)
             {
-                _log.DebugException(ex, "Could not get free mem on linux, received memory info raw string: [{0}]", meminfo);
+                _log.DebugException(ex, "Could not get free mem on linux, received memory info raw string: [{meminfo}]", meminfo);
                 return -1;
             }
         }
@@ -195,7 +195,7 @@ namespace EventStore.Core.Services.Monitoring
             }
             catch (Exception ex)
             {
-                _log.DebugException(ex, "Could not get free memory on BSD.");
+                _log.DebugException(ex, "Could not get free memory on BSD."); 
                 return -1;
             }
         }

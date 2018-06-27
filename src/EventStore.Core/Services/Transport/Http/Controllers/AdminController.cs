@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using EventStore.Common.Log;
 using EventStore.Core.Bus;
 using EventStore.Core.Messages;
@@ -55,7 +55,7 @@ namespace EventStore.Core.Services.Transport.Http.Controllers
 
         private void LogReplyError(Exception exc)
         {
-            Log.Debug("Error while closing HTTP connection (admin controller): {0}.", exc.Message);
+            Log.Debug("Error while closing HTTP connection (admin controller): {e}.", exc.Message);
         }
     }
 }

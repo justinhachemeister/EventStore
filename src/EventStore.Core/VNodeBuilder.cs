@@ -39,7 +39,7 @@ namespace EventStore.Core
         protected bool _disableHTTPCaching;
         protected bool _logHttpRequests;
         protected bool _enableHistograms;
-
+        protected bool _structuredLog;
         protected IPEndPoint _internalTcp;
         protected IPEndPoint _internalSecureTcp;
         protected IPEndPoint _externalTcp;
@@ -145,6 +145,7 @@ namespace EventStore.Core
             _cachedChunks = Opts.CachedChunksDefault;
             _inMemoryDb = true;
             _projectionType = ProjectionType.None;
+            _structuredLog = Opts.StructuredLog;
 
             _externalTcp = new IPEndPoint(Opts.ExternalIpDefault, Opts.ExternalTcpPortDefault);
             _externalSecureTcp = null;
@@ -236,6 +237,17 @@ namespace EventStore.Core
             _clusterNodeCount = clusterNodeCount;
             _prepareAckCount = quorumSize;
             _commitAckCount = quorumSize;
+            return this;
+        }
+
+        /// <summary>
+        /// Enable structured logging
+        /// </summary>
+        /// <param name="StructuredLog">Enable structured logging</param>
+        /// <returns>A <see cref="VNodeBuilder"/> with the options set</returns>
+        public VNodeBuilder StructuredLog(bool structuredLog)
+        {
+            _structuredLog = structuredLog;
             return this;
         }
 
@@ -1423,13 +1435,14 @@ namespace EventStore.Core
                     _gossipOnSingleNode,
                     _skipIndexScanOnReads);
             var infoController = new InfoController(options, _projectionType);
+            var epochCheckpoint = _db.Config.EpochCheckpoint.Read();
 
-            _log.Info("{0,-25} {1}", "INSTANCE ID:", _vNodeSettings.NodeInfo.InstanceId);
-            _log.Info("{0,-25} {1}", "DATABASE:", _db.Config.Path);
-            _log.Info("{0,-25} {1} (0x{1:X})", "WRITER CHECKPOINT:", _db.Config.WriterCheckpoint.Read());
-            _log.Info("{0,-25} {1} (0x{1:X})", "CHASER CHECKPOINT:", _db.Config.ChaserCheckpoint.Read());
-            _log.Info("{0,-25} {1} (0x{1:X})", "EPOCH CHECKPOINT:", _db.Config.EpochCheckpoint.Read());
-            _log.Info("{0,-25} {1} (0x{1:X})", "TRUNCATE CHECKPOINT:", _db.Config.TruncateCheckpoint.Read());
+            _log.Info("{description,-25} {instanceId}", "INSTANCE ID:", _vNodeSettings.NodeInfo.InstanceId);
+            _log.Info("{description,-25} {path}", "DATABASE:", _db.Config.Path);
+            _log.Info("{description,-25} {writerCheckpoint} (0x{writerCheckpoint:X})", "WRITER CHECKPOINT:", _db.Config.WriterCheckpoint.Read(),_db.Config.WriterCheckpoint.Read());
+            _log.Info("{description,-25} {chaserCheckpoint} (0x{chaserCheckpoint:X})", "CHASER CHECKPOINT:", _db.Config.ChaserCheckpoint.Read(), _db.Config.ChaserCheckpoint.Read());
+            _log.Info("{description,-25} {epochCheckpoint} (0x{epochCheckpoint:X})", "EPOCH CHECKPOINT:", epochCheckpoint, epochCheckpoint);
+            _log.Info("{description,-25} {truncateCheckpoint} (0x{truncateCheckpoint:X})", "TRUNCATE CHECKPOINT:", _db.Config.TruncateCheckpoint.Read(), _db.Config.TruncateCheckpoint.Read());
 
             return new ClusterVNode(_db, _vNodeSettings, GetGossipSource(), infoController, _subsystems.ToArray());
         }
@@ -1492,9 +1505,9 @@ namespace EventStore.Core
                 {
                     if (dbPath == Locations.DefaultDataDirectory)
                     {
-                        log.Info("Access to path {0} denied. The Event Store database will be created in {1}", dbPath, Locations.FallbackDefaultDataDirectory);
+                        log.Info("Access to path {dbPath} denied. The Event Store database will be created in {fallbackDefaultDataDirectory}", dbPath, Locations.FallbackDefaultDataDirectory);
                         dbPath = Locations.FallbackDefaultDataDirectory;
-                        log.Info("Defaulting DB Path to {0}", dbPath);
+                        log.Info("Defaulting DB Path to {dbPath}", dbPath);
 
                         if (!Directory.Exists(dbPath)) // mono crashes without this check
                             Directory.CreateDirectory(dbPath);
