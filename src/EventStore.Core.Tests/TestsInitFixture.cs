@@ -26,7 +26,7 @@ namespace EventStore.Core.Tests
             ConsoleTarget consoleTarget = new ConsoleTarget("testconsole");
             var config = new NLog.Config.LoggingConfiguration();        
             config.AddRule(LogLevel.Trace, LogLevel.Fatal, consoleTarget);
-            consoleTarget.Layout = "${message}";
+            consoleTarget.Layout = "[${processid:padCharacter=0:padding=5},${threadid:padCharacter=0:padding=2},${date:universalTime=true:format=HH\\:mm\\:ss\\.fff},${level:padding=-5:uppercase=true}] ${message}${onexception:${newline}${literal:text=EXCEPTION OCCURRED}${newline}${exception:format=message}}";
             NLog.LogManager.Configuration = config;
             EventStore.Common.Log.LogManager.SetLogFactory(x => new NLogger(x));
 
