@@ -221,7 +221,7 @@ namespace EventStore.TestClient
                 {
                     if (!InteractiveMode || error != SocketError.Success)
                     {
-                        Log.Info("TcpTypedConnection: connection [{remoteEndPoint}, L{localEndPoint}] was closed {closed}",
+                        Log.Info("TcpTypedConnection: connection [{remoteEndPoint}, L{localEndPoint}] was closed {status}",
                                  conn.RemoteEndPoint, conn.LocalEndPoint,
                                  error == SocketError.Success ? "cleanly." : "with error: " + error + ".");
                     }
