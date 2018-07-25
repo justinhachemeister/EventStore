@@ -24,7 +24,7 @@ namespace EventStore.Common.Log
         [ConditionMethod("is-structured")]
         public static bool IsStructured()
         {
-            return LogManager._isStructured;
+            return LogManager.StructuredLog;
         }
     }
 

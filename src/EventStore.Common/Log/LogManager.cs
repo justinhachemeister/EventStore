@@ -39,7 +39,7 @@ namespace EventStore.Common.Log
         private static bool _initialized;
         private static Func<string, ILogger> _logFactory = x => new NLogger(x);
         internal static string _logsDirectory;
-        internal static bool _isStructured;
+        private static bool _isStructured;
 
         static LogManager()
         {
