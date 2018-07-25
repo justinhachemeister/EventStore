@@ -293,7 +293,7 @@ namespace EventStore.Core.Index
                         if (!ReferenceEquals(corrTable.Table, ptable) && corrTable.Table is PTable)
                             ((PTable)corrTable.Table).MarkForDestruction();
 
-                        Log.Trace("There are now {memTables} awaiting tables.", memTables.Count);
+                        Log.Trace("There are now {awaitingMemTables} awaiting tables.", memTables.Count);
                         _awaitingMemTables = memTables;
                     }
                     mergeResult.ToDelete.ForEach(x => x.MarkForDestruction());

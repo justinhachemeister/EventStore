@@ -140,15 +140,15 @@ namespace EventStore.Core
             var componentName = GetComponentName(options);
 
             Console.Title = string.Format("{0}, {1}", projName, componentName);
-        
+
             string logsDirectory = Path.GetFullPath(options.Log.IsNotEmptyString() ? options.Log : GetLogsDirectory(options));
             bool structuredLog = GetIsStructuredLog(options);
             
             LogManager.Init(componentName, logsDirectory, structuredLog, Locations.DefaultConfigurationDirectory);
 
             Log.Info("\n{description,-25} {version} ({branch}/{hashtag}, {timestamp})", "ES VERSION:", VersionInfo.Version, VersionInfo.Branch, VersionInfo.Hashtag, VersionInfo.Timestamp);
-            Log.Info("{description,-25} {osFlavor} ({oSVersion})", "OS:", OS.OsFlavor, Environment.OSVersion);
-            Log.Info("{description,-25} {osRuntimeVersion} ({bits}-bit)", "RUNTIME:", OS.GetRuntimeVersion(), Marshal.SizeOf(typeof(IntPtr)) * 8);
+            Log.Info("{description,-25} {osFlavor} ({osVersion})", "OS:", OS.OsFlavor, Environment.OSVersion);
+            Log.Info("{description,-25} {osRuntimeVersion} ({architecture}-bit)", "RUNTIME:", OS.GetRuntimeVersion(), Marshal.SizeOf(typeof(IntPtr)) * 8);
             Log.Info("{description,-25} {maxGeneration}", "GC:", GC.MaxGeneration == 0 ? "NON-GENERATION (PROBABLY BOEHM)" : string.Format("{0} GENERATIONS", GC.MaxGeneration + 1));
             Log.Info("{description,-25} {logsDirectory}", "LOGS:", LogManager.LogsDirectory);
             if(!structuredLog)

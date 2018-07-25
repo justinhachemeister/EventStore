@@ -184,11 +184,11 @@ namespace EventStore.Core.Services.Gossip
 
             if (CurrentMaster != null && node.InstanceId == CurrentMaster.InstanceId)
             {
-                Log.Trace("Looks like master [{recipient}, {instanceId:B}] is DEAD (Gossip send failed), though we wait for TCP to decide.",
+                Log.Trace("Looks like master [{masterEndPoint}, {instanceId:B}] is DEAD (Gossip send failed), though we wait for TCP to decide.",
                           message.Recipient, node.InstanceId);
                 return;
             }
-            Log.Trace("Looks like node [{recipient}] is DEAD (Gossip send failed).", message.Recipient);
+            Log.Trace("Looks like node [{nodeEndPoint}] is DEAD (Gossip send failed).", message.Recipient);
 
             var oldCluster = _cluster;
             _cluster = UpdateCluster(_cluster, x => x.Is(message.Recipient) ? x.Updated(isAlive: false) : x);
@@ -203,7 +203,7 @@ namespace EventStore.Core.Services.Gossip
             if (node == null || !node.IsAlive)
                 return;
 
-            Log.Trace("Looks like node [{vNodeEndPoint}] is DEAD (TCP connection lost).", message.VNodeEndPoint);
+            Log.Trace("Looks like node [{nodeEndPoint}] is DEAD (TCP connection lost).", message.VNodeEndPoint);
 
             var oldCluster = _cluster;
             _cluster = UpdateCluster(_cluster, x => x.Is(message.VNodeEndPoint) ? x.Updated(isAlive: false) : x);
@@ -234,7 +234,7 @@ namespace EventStore.Core.Services.Gossip
                     if ((DateTime.UtcNow - member.TimeStamp).Duration() > AllowedTimeDifference)
                     {
                         Log.Error("Time difference between us and [{peerEndPoint}] is too great! "
-                                  + "UTC now: {dateTime:yyyy-MM-dd HH:mm:ss.fff}, peer's time stamp: {memberTimestamp:yyyy-MM-dd HH:mm:ss.fff}.",
+                                  + "UTC now: {dateTime:yyyy-MM-dd HH:mm:ss.fff}, peer's time stamp: {peerTimestamp:yyyy-MM-dd HH:mm:ss.fff}.",
                                   peerEndPoint, DateTime.UtcNow, member.TimeStamp);
                     }
                     mems[member.InternalHttpEndPoint] = member;
