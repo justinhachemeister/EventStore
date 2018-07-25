@@ -581,7 +581,7 @@ namespace EventStore.Core.Services.PersistentSubscription
         {
             PersistentSubscription subscription;
             var key = BuildSubscriptionGroupKey(message.EventStreamId, message.GroupName);
-            Log.Debug("Replaying parked messages for persistent subscription {0}", key);
+            Log.Debug("Replaying parked messages for persistent subscription {subscriptionKey}", key);
             var streamAccess = _readIndex.CheckStreamAccess(SystemStreams.SettingsStream, StreamAccessType.Write, message.User);
 
             if (!streamAccess.Granted)
