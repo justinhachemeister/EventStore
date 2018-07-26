@@ -95,7 +95,8 @@ namespace EventStore.Core.TransactionLog.Chunks
 
             if (_config.EpochCheckpoint.Read() >= truncateChk)
             {
-                Log.Info("Truncating epoch from {epochFrom} (0x{epochFrom:X}) to {epochTo} (0x{epochTo:X}).", _config.EpochCheckpoint.Read(),_config.EpochCheckpoint.Read(), -1,-1);
+                var epochChk = _config.EpochCheckpoint.Read();
+                Log.Info("Truncating epoch from {epochFrom} (0x{epochFrom:X}) to {epochTo} (0x{epochTo:X}).", epochChk,epochChk, -1,-1);
                 _config.EpochCheckpoint.Write(-1);
                 _config.EpochCheckpoint.Flush();
             }

@@ -19,7 +19,7 @@ namespace EventStore.TestClient
         public void Error(string format, params object[] args)
         {
             if (args.Length == 0)
-                _log.Error(format); 
+                _log.Error(format);
             else
                 _log.Error(format, args);
         }
@@ -43,7 +43,7 @@ namespace EventStore.TestClient
         public void Info(Exception ex, string format, params object[] args)
         {
             if (args.Length == 0)
-                _log.InfoException(ex, format); 
+                _log.InfoException(ex, format);
             else
                 _log.InfoException(ex, format, args);
         }

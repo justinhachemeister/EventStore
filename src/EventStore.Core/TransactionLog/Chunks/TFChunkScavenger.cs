@@ -165,7 +165,7 @@ namespace EventStore.Core.TransactionLog.Chunks
             }
             catch (IOException exc)
             {
-                Log.ErrorException(exc, "IOException during creating new chunk for scavenging purposes. Stopping scavenging process..."); 
+                Log.ErrorException(exc, "IOException during creating new chunk for scavenging purposes. Stopping scavenging process...");
                 return false;
             }
 

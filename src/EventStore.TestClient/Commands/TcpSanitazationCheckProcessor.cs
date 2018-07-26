@@ -97,7 +97,7 @@ namespace EventStore.TestClient.Commands
                      packages.Count() - commandsToCheck.Length,
                      packages.Count());
 
-            Log.Info("Now sending raw bytes..."); 
+            Log.Info("Now sending raw bytes...");
             try
             {
                 SendRaw(context.Client.TcpEndpoint, BitConverter.GetBytes(int.MaxValue));

@@ -139,11 +139,11 @@ namespace EventStore.TestClient.Commands.RunTestScenarios
                                         .FailOnNoServerResponse(),
                     new Uri(string.Format("tcp://{0}:{1}", _nodeConnection.IpAddress, _nodeConnection.TcpPort)),
                     string.Format("ESConn-{0}", i));
-                _connections[i].Closed += (s, e) => Log.Debug("[SCENARIO] {connectionName} closed.", e.Connection.ConnectionName);
-                _connections[i].Connected += (s, e) => Log.Debug("[SCENARIO] {connectionName} connected to [{remoteEndPoint}].", e.Connection.ConnectionName, e.RemoteEndPoint);
-                _connections[i].Disconnected += (s, e) => Log.Debug("[SCENARIO] {connectionName} disconnected from [{remoteEndPoint}].", e.Connection.ConnectionName, e.RemoteEndPoint);
-                _connections[i].Reconnecting += (s, e) => Log.Debug("[SCENARIO] {connectionName} reconnecting.", e.Connection.ConnectionName);
-                _connections[i].ErrorOccurred += (s, e) => Log.DebugException(e.Exception, "[SCENARIO] {connectionName} error occurred.", e.Connection.ConnectionName);
+                _connections[i].Closed += (s, e) => Log.Debug("[SCENARIO] {connection} closed.", e.Connection.ConnectionName);
+                _connections[i].Connected += (s, e) => Log.Debug("[SCENARIO] {connection} connected to [{remoteEndPoint}].", e.Connection.ConnectionName, e.RemoteEndPoint);
+                _connections[i].Disconnected += (s, e) => Log.Debug("[SCENARIO] {connection} disconnected from [{remoteEndPoint}].", e.Connection.ConnectionName, e.RemoteEndPoint);
+                _connections[i].Reconnecting += (s, e) => Log.Debug("[SCENARIO] {connection} reconnecting.", e.Connection.ConnectionName);
+                _connections[i].ErrorOccurred += (s, e) => Log.DebugException(e.Exception, "[SCENARIO] {connection} error occurred.", e.Connection.ConnectionName);
                 _connections[i].ConnectAsync().Wait();
             } 
             RunInternal();   
@@ -218,7 +218,7 @@ namespace EventStore.TestClient.Commands.RunTestScenarios
                 Log.Info("Finished writing. Mode : {mode,-15} Streams : {streamsLength,-10} Events per stream : {eventsPerStream,-10}",
                          mode,
                          streams.Length,
-                         eventsPerStream); 
+                         eventsPerStream);
             });
         }
 
@@ -444,7 +444,7 @@ namespace EventStore.TestClient.Commands.RunTestScenarios
 
         private void KillStartedNodes()
         {
-            Log.Info("Killing remaining nodes..."); 
+            Log.Info("Killing remaining nodes...");
             try
             {
                 _startedNodesProcIds.ToList().ForEach(KillNode);

@@ -104,7 +104,7 @@ namespace EventStore.Transport.Http.EntityManagement
             }
             catch (ArgumentException e)
             {
-                Log.ErrorException(e, "Description string '{desc}' did not pass validation. Status description was not set.", desc);
+                Log.ErrorException(e, "Description string '{description}' did not pass validation. Status description was not set.", desc);
             }
         }
 

@@ -164,7 +164,7 @@ namespace EventStore.Transport.Http.Server
                 }
                 catch(Exception ex) 
                 {
-                    Logger.ErrorException(ex, "ProcessRequest error"); 
+                    Logger.ErrorException(ex, "ProcessRequest error");
                 }
 
             try

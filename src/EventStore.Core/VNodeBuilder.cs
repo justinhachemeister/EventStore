@@ -1435,14 +1435,18 @@ namespace EventStore.Core
                     _gossipOnSingleNode,
                     _skipIndexScanOnReads);
             var infoController = new InfoController(options, _projectionType);
+
+            var writerCheckpoint = _db.Config.WriterCheckpoint.Read();
+            var chaserCheckpoint = _db.Config.ChaserCheckpoint.Read();
             var epochCheckpoint = _db.Config.EpochCheckpoint.Read();
+            var truncateCheckpoint =  _db.Config.TruncateCheckpoint.Read();
 
             _log.Info("{description,-25} {instanceId}", "INSTANCE ID:", _vNodeSettings.NodeInfo.InstanceId);
             _log.Info("{description,-25} {path}", "DATABASE:", _db.Config.Path);
-            _log.Info("{description,-25} {writerCheckpoint} (0x{writerCheckpoint:X})", "WRITER CHECKPOINT:", _db.Config.WriterCheckpoint.Read(),_db.Config.WriterCheckpoint.Read());
-            _log.Info("{description,-25} {chaserCheckpoint} (0x{chaserCheckpoint:X})", "CHASER CHECKPOINT:", _db.Config.ChaserCheckpoint.Read(), _db.Config.ChaserCheckpoint.Read());
-            _log.Info("{description,-25} {epochCheckpoint} (0x{epochCheckpoint:X})", "EPOCH CHECKPOINT:", epochCheckpoint, epochCheckpoint);
-            _log.Info("{description,-25} {truncateCheckpoint} (0x{truncateCheckpoint:X})", "TRUNCATE CHECKPOINT:", _db.Config.TruncateCheckpoint.Read(), _db.Config.TruncateCheckpoint.Read());
+            _log.Info("{description,-25} {writerCheckpoint} (0x{writerCheckpoint:X})", "WRITER CHECKPOINT:", writerCheckpoint,writerCheckpoint);
+            _log.Info("{description,-25} {chaserCheckpoint} (0x{chaserCheckpoint:X})", "CHASER CHECKPOINT:", chaserCheckpoint,chaserCheckpoint);
+            _log.Info("{description,-25} {epochCheckpoint} (0x{epochCheckpoint:X})", "EPOCH CHECKPOINT:", epochCheckpoint,epochCheckpoint);
+            _log.Info("{description,-25} {truncateCheckpoint} (0x{truncateCheckpoint:X})", "TRUNCATE CHECKPOINT:", truncateCheckpoint,truncateCheckpoint);
 
             return new ClusterVNode(_db, _vNodeSettings, GetGossipSource(), infoController, _subsystems.ToArray());
         }

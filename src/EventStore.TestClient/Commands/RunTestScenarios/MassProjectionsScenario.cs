@@ -132,7 +132,7 @@ namespace EventStore.TestClient.Commands.RunTestScenarios
                 var retry = 0;
 
                 int shortWait = 50 + _random.Next(100);
-                Log.Debug("Wait for {shortWait}ms before next enable/disable projection", shortWait);
+                Log.Debug("Wait for {waitTime}ms before next enable/disable projection", shortWait);
                 Thread.Sleep(shortWait);
                 
                 while (retry <= retriesNumber)
@@ -162,7 +162,7 @@ namespace EventStore.TestClient.Commands.RunTestScenarios
                     {
                         var waitForMs = 5000 + (retry * (3000 + _random.Next(2000)));
 
-                        Log.InfoException(ex, "Failed to StartOrStopProjection (enable:{enable}; isRunning:{isRunning}) projection {projection}, retry #{retry}, wait {waitForMs}ms", 
+                        Log.InfoException(ex, "Failed to StartOrStopProjection (enable:{enable}; isRunning:{isRunning}) projection {projection}, retry #{retry}, wait {waitTime}ms",
                                               enable, 
                                               isRunning,
                                               projection,
